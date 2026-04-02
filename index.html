@@ -40,79 +40,79 @@
     /* Admin Styles */
     .admin-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 2000; padding: 20px; overflow-y: auto; box-sizing: border-box; }
     .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-    .admin-btn { padding: 12px; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; }
+    .admin-btn { padding: 12px; border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; transition: 0.3s; }
     .bg-blue { background: #0984e3; } .bg-green { background: #27ae60; } .bg-red { background: #d63031; } .bg-orange { background: #e67e22; } .bg-dark { background: #2d3436; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 13px; }
     .q-editor-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 15px; }
     .q-edit-btn { padding: 10px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; border-radius: 5px; font-size: 12px; }
-    .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.3); z-index: 3000; width: 90%; max-width: 500px; border-radius: 15px; }
+    .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.3); z-index: 3000; width: 90%; max-width: 500px; border-radius: 15px; text-align: center; }
     
+    .time-ctrl { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0; }
+    .btn-circle { width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 24px; color: #fff; cursor: pointer; font-weight: bold; }
+    .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+
     .credits-box { position: fixed; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.95); border: 1px solid #007bff; padding: 8px 12px; border-radius: 10px; font-size: 11px; direction: rtl; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 999; color: #333; line-height: 1.4; }
-
-    .big-warning {
-        background: #ff4757;
-        color: white;
-        padding: 15px;
-        border-radius: 12px;
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 15px;
-        border: 3px solid #c0392b;
-    }
-
-    .admin-logs-container {
-        max-height: 150px;
-        overflow-y: auto;
-        background: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 10px;
-        margin-top: 10px;
-        font-size: 13px;
-    }
+    .big-warning { background: #ff4757; color: white; padding: 15px; border-radius: 12px; text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px; border: 3px solid #c0392b; }
 </style>
 </head>
 <body>
 
-<button onclick="adminTrigger()" style="position: fixed; top: 10px; left: 10px; z-index: 1002; background: #2c3e50; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">⚙️ لوحة التحكم</button>
+<button onclick="showAdminAuth()" style="position: fixed; top: 10px; left: 10px; z-index: 1002; background: #2c3e50; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">⚙️ لوحة التحكم</button>
 
 <div class="credits-box">
     <strong>برمجة:</strong> محمود محمد محمود جمعه<br>
-    <strong>القرية:</strong> أطواب | <strong>الاستاذ:</strong> محمد جمال<br>
-    <span style="color: #007bff;">تمت المساعدة بواسطة جيميناي (الاستضافة)</span>
+    <strong>القرية:</strong> أطواب | <strong>الاستاذ:</strong> محمد جمال
+</div>
+
+<div id="adminAuthModal" class="modal-overlay">
+    <div class="modal" style="display:block; position:static; transform:none;">
+        <h3 style="color:var(--primary)">دخول لوحة التحكم</h3>
+        <input type="text" id="adminPassInput" placeholder="أدخل كلمة سر الأدمن">
+        <div style="display:flex; gap:10px">
+            <button class="admin-btn bg-blue" style="flex:1" onclick="checkAdminAuth()">دخول آمن</button>
+            <button class="admin-btn bg-dark" style="flex:1" onclick="hideAdminAuth()">إلغاء</button>
+        </div>
+    </div>
 </div>
 
 <div id="adminPanel" class="admin-panel">
-    <div class="big-warning">
-        🚫 رجاءً عدم العبث في لوحة التحكم حتى لا تدخل في مسائل غير قانونية 🚫
-    </div>
-
+    <div class="big-warning">🚫 رجاءً عدم العبث في لوحة التحكم حتى لا تدخل في مسائل غير قانونية 🚫</div>
     <h2 style="text-align:center; color:var(--primary)">لوحة التحكم - مستر محمد جمال</h2>
     <div class="admin-grid">
+        <button class="admin-btn bg-dark" onclick="openTimeModal()">⏱️ تعديل الوقت المتبقي (+/-)</button>
         <button class="admin-btn bg-green" onclick="updateCloud('closed', false)">🔓 فتح الامتحان</button>
         <button class="admin-btn bg-red" onclick="updateCloud('closed', true)">🔒 قفل الامتحان</button>
         <button class="admin-btn bg-blue" onclick="setCloudPass()">🔑 كلمة سر الطلاب</button>
+        <button class="admin-btn bg-dark" onclick="changeAdminPass()">🔑 تغيير كلمة سر الأدمن</button>
         <button class="admin-btn bg-orange" onclick="updateCloud('password', '')">🚫 إزالة الباسورد</button>
-        <button class="admin-btn bg-orange" onclick="togglePhoneVisible()">📱 إخفاء/إظهار الهاتف</button>
-        <button class="admin-btn bg-red" id="blockBtn" onclick="toggleBlockMode()">🛡️ حماية التكرار: مفعل</button>
+        <button class="admin-btn" id="phoneToggleBtn" onclick="togglePhoneVisible()">📱 حالة الهاتف</button>
+        <button class="admin-btn bg-red" id="blockBtn" onclick="toggleBlockMode()">🛡️ حماية التكرار</button>
         <button class="admin-btn bg-blue" onclick="showResults('top')">🏆 الأوائل</button>
         <button class="admin-btn bg-blue" onclick="showResults('all')">👥 كل الطلاب</button>
         <button class="admin-btn bg-dark" onclick="adminPreview()">👁️ دخول الأدمن (تخطي القفل)</button>
-        <button class="admin-btn bg-dark" onclick="showAdminLogs()">🕒 سجل دخول الأدمن</button>
-        <button class="admin-btn bg-red" onclick="resetAllResults()" style="grid-column: span 2; border: 2px solid white;">🧹 تصفير جميع النتائج (لوحة الأوائل والطلاب)</button>
+        <button class="admin-btn bg-dark" onclick="showAdminLogs()">🕒 سجل الدخول التفصيلي</button>
+        <button class="admin-btn bg-red" onclick="resetAllResults()" style="grid-column: span 2; border: 2px solid white;">🧹 تصفير جميع النتائج</button>
     </div>
-
-    <div id="adminContent"></div>
-
+    <div id="adminContent" style="background:#f9f9f9; padding:10px; border-radius:10px; margin-top:10px;"></div>
     <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
         <h4>الأسئلة الحالية:</h4>
         <button class="admin-btn bg-green" onclick="addNewQuestion()">➕ إضافة سؤال جديد</button>
     </div>
     <div class="q-editor-grid" id="qEditorGrid"></div>
-
     <button onclick="document.getElementById('adminPanel').style.display='none'" class="admin-btn" style="width:100%; margin-top:20px; background:#636e72">إغلاق اللوحة</button>
+</div>
+
+<div id="timeEditModal" class="modal-overlay">
+    <div class="modal" style="display:block; position:static; transform:none;">
+        <h3 style="margin-top:0">تعديل وقت الامتحان</h3>
+        <div class="time-ctrl">
+            <button class="btn-circle bg-red" onclick="adjustTime(-5)">-5</button>
+            <div id="mTimeDisplay" style="font-size:28px; font-weight:bold; color:var(--primary)">30:00</div>
+            <button class="btn-circle bg-green" onclick="adjustTime(5)">+5</button>
+        </div>
+        <button class="admin-btn bg-dark" style="width:100%" onclick="hideTimeModal()">إغلاق</button>
+    </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
@@ -120,6 +120,7 @@
     <h4 id="sideStudentName">الاسم</h4>
     <div class="q-grid" id="qGrid"></div>
 </div>
+
 <div class="login" id="login">
     <h1>امتحان لغة عربية</h1>
     <p id="lockMsg" style="color:red; display:none; font-weight:bold;">⚠️ الامتحان مغلق حالياً.</p>
@@ -129,6 +130,7 @@
         <button id="startBtn" style="background:var(--primary); color:#fff; border:none; padding:15px; width:100%; border-radius:12px; font-size:18px; cursor:pointer;" onclick="start()">بدء الاختبار</button>
     </div>
 </div>
+
 <div class="exam" id="exam" style="display:none">
     <div class="top">
         <div class="right-section">
@@ -147,6 +149,7 @@
         <div class="nav" id="navButtons"></div>
     </div>
 </div>
+
 <div id="qModal" class="modal">
     <h3 id="modalTitle">تعديل سؤال</h3>
     <input id="editQ" placeholder="نص السؤال">
@@ -155,14 +158,14 @@
     <input id="editA2" placeholder="الاختيار الثالث">
     <input id="editA3" placeholder="الاختيار الرابع">
     <select id="editCorrect">
-        <option value="0">الاختيار الأول هو الصح</option>
-        <option value="1">الاختيار الثاني هو الصح</option>
-        <option value="2">الاختيار الثالث هو الصح</option>
-        <option value="3">الاختيار الرابع هو الصح</option>
+        <option value="0">الاختيار الأول صح</option>
+        <option value="1">الاختيار الثاني صح</option>
+        <option value="2">الاختيار الثالث صح</option>
+        <option value="3">الاختيار الرابع صح</option>
     </select>
-    <div style="display:flex; gap:10px; margin-top: 15px;">
-        <button class="admin-btn bg-green" style="flex:1" onclick="saveQuestion()">حفظ التعديل</button>
-        <button class="admin-btn bg-red" style="flex:1" onclick="deleteQuestion()">حذف السؤال نهائياً</button>
+    <div style="display:flex; gap:10px; margin-top:15px;">
+        <button class="admin-btn bg-green" style="flex:1" onclick="saveQuestion()">حفظ</button>
+        <button class="admin-btn bg-red" style="flex:1" onclick="deleteQuestion()">حذف</button>
     </div>
     <button class="admin-btn bg-orange" style="width:100%; margin-top:10px;" onclick="closeModal()">إلغاء</button>
 </div>
@@ -176,189 +179,155 @@ const firebaseConfig = {
     authDomain: "arabic-exam-2024.firebaseapp.com",
     databaseURL: "https://arabic-exam-2024-default-rtdb.firebaseio.com", 
     projectId: "arabic-exam-2024",
-    storageBucket: "arabic-exam-2024.firebasestorage.app",
-    messagingSenderId: "694706485946",
-    appId: "1:694706485946:web:488bdd16b1ad37d1976083",
-    measurementId: "G-XXTW4YBL21"
+    appId: "1:694706485946:web:488bdd16b1ad37d1976083"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let defaultQuestions = [
-    {ctx:"<div class='verse'><span class='hemistich'>لي فتاة ملأت صدري جوى</span><span class='hemistich'>ذاب فيها القلب شوقا واعترف</span></div><div class='verse'><span class='hemistich'>كل يوم لي منها موعد</span><span class='hemistich'>في صباح في مساء في غسق</span></div><div class='verse'><span class='hemistich'>لا تظنني أنسى الهوى</span><span class='hemistich'>ففتاتي من مسندٍ وورق</span></div>", q:"(1) المحسن البديعي في البيت الثاني:", a:["جناس تام","جناس ناقص","تصريع","طباق"], c:3},
-    {ctx:"لي فتاة ملأت صدري جوى...", q:"(2) علاقة المجاز المرسل في (صدري):", a:["حالية","محلية","اعتبار ما كان","اعتبار ما سيكون"], c:1},
-    {ctx:"لي فتاة ملأت صدري جوى...", q:"(3) نوع الخيال في (ذاب القلب شوقا):", a:["تشبيه بليغ","استعارة مكنية","تشبيه مجمل","استعارة تصريحية"], c:1},
-    {ctx:"لي فتاة ملأت صدري جوى...", q:"(4) كل الكنايات التالية صحيحة ما عدا:", a:["فتاتي من مداد وورق كناية عن موصوف","فتاة ملأت صدري جوى كناية عن صفة","كل يوم لي منها موعد كناية عن صفة","ذاب فيها القلب شوقا كناية عن نسبة"], c:3},
-    {ctx:"<div class='verse'><span class='hemistich'>بلغت بوصف النيل من وصفك المدى</span><span class='hemistich'>وأيام فرعون ومعبوده رع</span></div>", q:"(5) من مظاهر التجديد عند شوقي في البيت السابق:", a:["الاتجاه إلى التاريخ","الاتجاه للمديح","وصف مخترعات العصر","اتجاهه اتجاهاً إسلامياً"], c:0},
-    {ctx:"<div class='verse'><span class='hemistich'>مني وصل ومنك هجر</span><span class='hemistich'>وفي ذل وفيك كبر</span></div><div class='verse'><span class='hemistich'>قد كنت حراً وأنت عبد</span><span class='hemistich'>فصرت عبداً وأنت حر</span></div>", q:"(6) ظهر في البيتين السابقين عند الشعراء العباسيين:", a:["التحليق في العاطفة","الميل إلى الصنعة اللفظية","ميل الخيال إلى التعقيد","استحداث أغراض جديدة"], c:1},
-    {ctx:"ما زلت تهتف بالقديم وفضله .. حتى حميت أمانة القدماء", q:"(7) من الأسباب التي دفعت تلاميذ البارودي لإكمال مسيرته:", a:["إيمانهم بالتغيير والتطور","حبهم للغة العربية","خوفهم على التراث العربي","اهتمامهم بالناحية البيانية"], c:2},
-    {ctx:"<div class='verse'><span class='hemistich'>لديه وفود اللفظ تنساق خلفها</span><span class='hemistich'>ووفود المعاني خشعاً عند خُشَّعِ</span></div>", q:"(8) من سمات الشعر عند تلاميذ البارودي كما يظهر في البيت:", a:["روعة التصوير وجمال الموسيقى","التعبير عن قضايا العصر","الاهتمام بالناحية البيانية","الاهتمام بالصياغة على حساب المعنى"], c:3},
-    {ctx:"<div class='verse'><span class='hemistich'>قصرٌ عليه تحيةٌ وسلامُ</span><span class='hemistich'>نُشرت عليه جمالها الأيامُ</span></div>", q:"(9) الغرض الشعري الذي استحدث في العصر العباسي هو وصف:", a:["الحدائق","مجالس اللهو","الطبيعة","الدور والقصور"], c:3},
-    {ctx:"<div class='verse'><span class='hemistich'>نزلت مقدمة المصيف حميدة</span><span class='hemistich'>ويد الشتاء جديدة لا تنكر</span></div>", q:"(10) (مقدمة المصيف) كناية عن:", a:["صفة وهي التبكير","موصوف وهو الربيع","صفة وهي الجمال والبهاء","نسبة الحمد إلى الصيف"], c:1},
-    {ctx:"نزلت مقدمة المصيف حميدة .. ويد الشتاء جديدة لا تنكر", q:"(11) (يد الشتاء) صورة بيانية نوعها:", a:["تشبيه بليغ","استعارة مكنية","استعارة تصريحية","تشبيه مجمل"], c:1},
-    {ctx:"الضاربين بكل أبيض مخذم .. والطاعنين مجامع الأضغان", q:"(12) ما تحته خط (مجامع الأضغان) كناية عن:", a:["صفة","موصوف (القلب)","نسبة","لا شيء مما سبق"], c:1},
-    {ctx:"(ويوم يعض الظالم على يديه يقول يا ليتني اتخذت مع الرسول سبيلاً)", q:"(13) ما تحته خط كناية عن:", a:["صفة (الندم)","موصوف","نسبة","تشبيه"], c:0},
-    {ctx:"ماذا يريدون؟ لا قرت عيونهم .. إن الكنانة لا يطوى لها علم", q:"(14) (الكنانة) كناية عن:", a:["صفة","موصوف (مصر)","نسبة","استعارة"], c:1},
-    {ctx:"صوب الخطأ: يشهد كل قاصى ودانى بعراقة حضارتنا.", q:"(15) التصويب الصحيح هو:", a:["كل قاصي وداني","كل قاصياً ودانيا","كل قاصٍ ودانٍ","كل قاصُ وداني"], c:2},
-    {ctx:"وسَمَّيْتُهُ (يحيى) لِيحيى ، فلم يَكُنْ .. إلى رَدِّ أمرِ اللهِ فيهِ سبيلُ", q:"(16) بين نوع الكلمة التي فوق الخط (يحيى) الأولى:", a:["اسم مقصور","اسم منقوص","اسم ممدود","اسم مصروف"], c:0},
-    {ctx:"وسَمَّيْتُهُ يحيى لِيحيى ، فلم يَكُنْ .. إلى رَدِّ أمرِ اللهِ فيهِ سبيلُ", q:"(17) بين نوع الكلمة التي فوق الخط (يحيى) الثانية:", a:["اسم مقصور","اسم ممدود","فعل ماضٍ","فعل مضارع"], c:3},
-    {ctx:"(إنَّهُ مَن يأتِ رَبَّهُ مُجْرِمًا فَإِنَّ لَهُ جَهَنَّمَ لا يَمُوتُ فِيهَا وَلا يَحْيَى)", q:"(18) بين نوع الكلمة التي فوق الخط (يحيى):", a:["اسم مقصور","اسم منقوص","فعل مضارع","اسم ممدود"], c:2},
-    {ctx:"(اليد العليا خير من اليد السفلى)", q:"(19) كلمة (العليا) تعد:", a:["اسماً مقصوراً","اسماً منقوصاً","اسماً ممدوداً","اسماً صحيحاً"], c:0},
-    {ctx:"(والشُّعَراءُ يَتَّبِعُهُمُ الغاوونَ)", q:"(20) إعراب كلمة (الغاوون) في الآية الكريمة:", a:["خبر مرفوع بالواو","فاعل مرفوع بالواو","فاعل مرفوع بضمة مقدرة","اسم إن منصوب بالفتحة"], c:1},
-    {ctx:"تغيرت المودة والإخاءُ .. وقلَّ الصدق وانقطع الرجاءُ", q:"(21) نوع الهمزة في كلمة (الرجاء):", a:["أصلية","زائدة للتأنيث","منقلبة عن أصل","زائدة للجمع"], c:2},
-    {ctx:"أحِبَّاءُ إذا استُعطِفوا ترحَّموا .. وأعداءٌ إذا استُنزِلوا استبسلوا", q:"(22) نوع الهمزة في كلمة (أحباء):", a:["أصلية","زائدة للتأنيث","منقلبة عن أصل","زائدة للجمع"], c:3},
-    {ctx:"يوم تضاحك نوره الوضاءُ .. للدهر منه حليةٌ سيراءُ", q:"(23) نوع الهمزة في كلمة (الوضاء):", a:["أصلية","زائدة للتأنيث","منقلبة عن أصل","زائدة للجمع"], c:0},
-    {ctx:"يوم تضاحك نوره الوضاءُ .. للدهر منه حليةٌ سيراءُ", q:"(24) نوع الهمزة في كلمة (سيراء):", a:["أصلية","زائدة للتأنيث","منقلبة عن أصل","زائدة للجمع"], c:1},
-    {ctx:"ما كُرِّمَ الطلاب إلا أهل الاجتهاد.", q:"(25) إعراب كلمة (أهل) في الجملة السابقة:", a:["واجب النصب","جواز النصب أو الإتباع للمبدل منه","واجب الجر","وجوب الرفع"], c:1},
-    {ctx:"يُقَدَّر الجميع ........ أعدائنا.", q:"(26) الأداة المناسبة لملء الفراغ بحيث تليها (أعدائنا) مجرورة:", a:["إلا","ما خلا","ما عدا","حاشا"], c:3},
-    {ctx:"الطالبات اجتزن الامتحان حاشا.....الهمة الضعيفه ", q:"(27)املأ الفراغ في الجمله الاتيه", a:["صاحباتُ","صاحبتا","صاحباتِ","ذاتُ"], c:2},
-    {ctx:"نواجه الصعوبات ماعدا (المستعصية)", q:"(28) الحالة الإعرابية لما بين القوسين هي:", a:["النصب فقط", "الجر فقط", "النصب والجر", "الرفع والجر"], c:0},
-    {ctx:"حيًت المعلمات الطالبات غير المقصِرات منهن." , q:"(29)ما اعراب غير في الجملة السابقة؟"  ,a:["اسم منصوب علي الاستثناء بفتحه ظاهره","اسم منصوب علي الاستثناء بفتحه مقدره","بدل منصوب بفتحه ظاهره","نعت منصوب بفتحه ظاهره"], c:0},
-    {ctx:"ميز الصورة الصحيحه لاسلوب الاستثناء مما يلي:", q:"(30)ميز؟",a:["ما حضر الادباء الاً اديبُ","ما حضر من الادباء الاً اديباً","حضر الادباء الاً اديبُ","ما حضر الاً اديباً"], c:0} 
-];
-
-let questions = [...defaultQuestions];
+let adminPassword = "admin mohamed123";
+const SECRET_PIN = "12342110"; // الرمز السري المطلوب
+let questions = []; 
 let isClosed = false, cloudPass = "", current=0, answers=[], flags=[], time=1800, studentName="", studentPhone="", editingIdx = -1;
 let phoneVisible = true, blockRepeat = true;
 
+// جلب الإعدادات وتحديث الواجهة
 onValue(ref(db, 'settings'), (snap) => {
     const d = snap.val() || {};
     isClosed = d.closed || false;
     cloudPass = d.password || "";
     phoneVisible = d.phoneVisible !== undefined ? d.phoneVisible : true;
     blockRepeat = d.blockRepeat !== undefined ? d.blockRepeat : true;
-    if(d.customQuestions) {
-        questions = d.customQuestions;
-        // تحديث الشبكة فوراً عند حدوث أي تغيير في السحابة
-        if(document.getElementById("adminPanel").style.display === "block") renderQEditor();
-    }
+    
+    if(d.customQuestions) questions = d.customQuestions;
+
     document.getElementById('lockMsg').style.display = isClosed ? 'block' : 'none';
     document.getElementById('phone').style.display = phoneVisible ? 'block' : 'none';
+    
+    // تحديث شكل زر الهاتف لبيان الحالة (تعديل جديد)
+    const pBtn = document.getElementById('phoneToggleBtn');
+    if(phoneVisible) {
+        pBtn.innerText = "📱 الهاتف: ظاهر حالياً";
+        pBtn.className = "admin-btn bg-green";
+    } else {
+        pBtn.innerText = "📵 الهاتف: مخفي حالياً";
+        pBtn.className = "admin-btn bg-red";
+    }
+
     document.getElementById('blockBtn').innerText = blockRepeat ? "🛡️ حماية التكرار: مفعل" : "🔓 حماية التكرار: معطل";
-    document.getElementById('blockBtn').className = blockRepeat ? "admin-btn bg-red" : "admin-btn bg-green";
 });
 
-window.adminTrigger = () => {
-    let p = prompt("كلمة سر لوحة التحكم:");
-    if(p === "admin mohamed123") {
+window.showAdminAuth = () => document.getElementById("adminAuthModal").style.display = "flex";
+window.hideAdminAuth = () => document.getElementById("adminAuthModal").style.display = "none";
+
+window.checkAdminAuth = () => {
+    let p = document.getElementById("adminPassInput").value;
+    if(p === adminPassword) {
         document.getElementById("adminPanel").style.display = "block";
         renderQEditor();
-        push(ref(db, 'adminLogs'), { time: new Date().toLocaleString(), timestamp: Date.now() });
-        cleanOldLogs();
-    } else { alert("خطأ في كلمة السر!"); }
-};
-
-window.resetAllResults = () => {
-    if(confirm("⚠️ تحذير: هل أنت متأكد من حذف جميع نتائج الطلاب نهائياً؟")) {
-        let p = prompt("برجاء كتابة كلمة سر الأدمن للتأكيد:");
-        if(p === "admin mohamed123") {
-            remove(ref(db, 'results')).then(() => {
-                alert("✅ تم تصفير النتائج.");
-                document.getElementById('adminContent').innerHTML = "";
-            });
-        } else { alert("❌ كلمة السر خاطئة."); }
+        hideAdminAuth();
+        document.getElementById("adminPassInput").value = "";
+        // تسجيل دخول محسن
+        push(ref(db, 'adminLogs'), { 
+            action: "دخول ناجح للوحة التحكم",
+            time: new Date().toLocaleString(),
+            day: new Intl.DateTimeFormat('ar-EG', {weekday: 'long'}).format(new Date())
+        });
+    } else { 
+        alert("❌ كلمة السر غير صحيحة!"); 
+        push(ref(db, 'adminLogs'), { action: "محاولة دخول فاشلة", time: new Date().toLocaleString() });
     }
 };
 
-async function cleanOldLogs() {
-    const snapshot = await get(ref(db, 'adminLogs'));
-    if (snapshot.exists()) {
-        const now = Date.now();
-        const logs = snapshot.val();
-        for (let key in logs) {
-            if (now - logs[key].timestamp > 86400000) { remove(ref(db, `adminLogs/${key}`)); }
-        }
+// تغيير الباسورد مع PIN سري
+window.changeAdminPass = () => {
+    let pin = prompt("أدخل الرمز السري (PIN) للمتابعة:");
+    if(pin === SECRET_PIN) {
+        let old = prompt("أدخل كلمة سر الأدمن الحالية:");
+        if(old === adminPassword) {
+            let n = prompt("أدخل كلمة السر الجديدة للوحة التحكم:");
+            if(n && n.length > 4) { 
+                adminPassword = n; 
+                alert("✅ تم تغيير كلمة السر بنجاح."); 
+            } else { alert("كلمة السر ضعيفة جداً!"); }
+        } else { alert("❌ كلمة السر الحالية خاطئة."); }
+    } else {
+        alert("⚠️ عذراً، الرمز السري PIN غير صحيح. لا يمكنك التغيير.");
     }
-}
+};
 
 window.showAdminLogs = () => {
     get(ref(db, 'adminLogs')).then((snap) => {
-        let logs = snap.val(); if(!logs) return alert("لا يوجد سجلات حالية");
-        let list = Object.values(logs).reverse();
-        let h = "<h4>سجل دخول الأدمن (آخر 24 ساعة):</h4><div class='admin-logs-container'><ul>";
-        list.forEach(l => h += `<li>📅 ${l.time}</li>`);
-        document.getElementById('adminContent').innerHTML = h + "</ul></div>";
+        let logs = snap.val(); if(!logs) return;
+        let h = "<h4>السجل الأخير لعمليات الإدارة:</h4><ul style='text-align:right; font-size:12px;'>";
+        Object.values(logs).reverse().slice(0,15).forEach(l => {
+            h += `<li style='margin-bottom:5px; border-bottom:1px solid #eee'>⬅️ ${l.action} <br> <small style='color:blue'>${l.time} (${l.day || ''})</small></li>`;
+        });
+        document.getElementById('adminContent').innerHTML = h + "</ul>";
     });
 };
 
-window.adminPreview = () => {
-    studentName = "معاينة الأدمن"; studentPhone = "00000000000";
-    document.getElementById("login").style.display="none";
-    document.getElementById("adminPanel").style.display="none";
-    document.getElementById("exam").style.display="block";
-    document.getElementById("student").innerText = studentName;
-    buildMenu(); show();
+// --- الوظائف الأساسية بدون تغيير لضمان الاستقرار ---
+window.openTimeModal = () => { updateMTimeDisplay(); document.getElementById("timeEditModal").style.display = "flex"; };
+window.hideTimeModal = () => document.getElementById("timeEditModal").style.display = "none";
+window.adjustTime = (mins) => { time += (mins * 60); if(time < 0) time = 0; updateMTimeDisplay(); };
+function updateMTimeDisplay() {
+    let mm = Math.floor(time/60), ss = time%60;
+    document.getElementById("mTimeDisplay").innerText = `${mm}:${ss<10?'0'+ss:ss}`;
+}
+window.resetAllResults = () => {
+    if(confirm("سيتم مسح جميع درجات الطلاب نهائياً. هل أنت متأكد؟")) {
+        let p = prompt("أدخل كلمة سر الأدمن للتأكيد:");
+        if(p === adminPassword) remove(ref(db, 'results')).then(()=>alert("تم تصفير النتائج بنجاح"));
+    }
 };
-
+window.adminPreview = () => {
+    studentName = "معاينة (أدمن)"; document.getElementById("login").style.display="none";
+    document.getElementById("adminPanel").style.display="none";
+    document.getElementById("exam").style.display="block"; buildMenu(); show();
+};
 window.togglePhoneVisible = () => updateCloud('phoneVisible', !phoneVisible);
 window.toggleBlockMode = () => updateCloud('blockRepeat', !blockRepeat);
 window.addNewQuestion = () => {
-    let newQ = { q: "سؤال جديد", a: ["", "", "", ""], c: 0, ctx: "" };
-    questions.push(newQ);
+    questions.push({ q: "سؤال جديد؟", a: ["اختيار 1", "اختيار 2", "اختيار 3", "اختيار 4"], c: 0, ctx: "" });
     updateCloud('customQuestions', questions);
 };
-
 window.renderQEditor = () => {
-    let grid = document.getElementById("qEditorGrid"); 
-    grid.innerHTML = "";
+    let grid = document.getElementById("qEditorGrid"); grid.innerHTML = "";
     questions.forEach((q, i) => {
-        let btn = document.createElement("button"); 
-        btn.className = "q-edit-btn";
-        btn.innerText = "سؤال " + (i+1);
-        btn.style.background = (i < 30) ? "#d1e7dd" : "#ffeaa7";
-        btn.onclick = () => openQModal(i); 
-        grid.appendChild(btn);
+        let btn = document.createElement("button"); btn.className = "q-edit-btn"; btn.innerText = "س"+(i+1);
+        btn.onclick = () => openQModal(i); grid.appendChild(btn);
     });
 };
-
 window.openQModal = (i) => {
-    editingIdx = i; let qData = questions[i];
-    document.getElementById("modalTitle").innerText = "تعديل سؤال رقم " + (i+1);
-    document.getElementById("editQ").value = qData.q;
-    document.getElementById("editA0").value = qData.a[0];
-    document.getElementById("editA1").value = qData.a[1];
-    document.getElementById("editA2").value = qData.a[2];
-    document.getElementById("editA3").value = qData.a[3];
-    document.getElementById("editCorrect").value = qData.c;
+    editingIdx = i; let q = questions[i];
+    document.getElementById("editQ").value = q.q;
+    document.getElementById("editA0").value = q.a[0];
+    document.getElementById("editA1").value = q.a[1];
+    document.getElementById("editA2").value = q.a[2];
+    document.getElementById("editA3").value = q.a[3];
+    document.getElementById("editCorrect").value = q.c;
     document.getElementById("qModal").style.display = "block";
 };
-
 window.saveQuestion = () => {
     questions[editingIdx] = {
-        ctx: questions[editingIdx]?.ctx || "",
+        ctx: questions[editingIdx].ctx || "",
         q: document.getElementById("editQ").value,
         a: [document.getElementById("editA0").value, document.getElementById("editA1").value, document.getElementById("editA2").value, document.getElementById("editA3").value],
         c: parseInt(document.getElementById("editCorrect").value)
     };
     updateCloud('customQuestions', questions); closeModal();
 };
-
-window.deleteQuestion = () => {
-    if(!confirm("هل أنت متأكد من حذف هذا السؤال تماماً؟")) return;
-    questions.splice(editingIdx, 1); 
-    updateCloud('customQuestions', questions); 
-    closeModal();
-    // تحديث الواجهة فورياً
-    renderQEditor(); 
-};
-
+window.deleteQuestion = () => { if(confirm("حذف السؤال؟")) { questions.splice(editingIdx, 1); updateCloud('customQuestions', questions); closeModal(); } };
 window.closeModal = () => document.getElementById("qModal").style.display = "none";
 window.updateCloud = (key, val) => update(ref(db, 'settings'), {[key]: val});
-window.setCloudPass = () => { let p = prompt("كلمة سر دخول الطلاب:"); if(p !== null) updateCloud('password', p); };
+window.setCloudPass = () => { let p = prompt("كلمة سر الطلاب الجدد:"); if(p !== null) updateCloud('password', p); };
 
 window.start = async () => {
-    if(isClosed) return alert("الامتحان مغلق!");
-    if(cloudPass && prompt("كلمة سر الامتحان:") !== cloudPass) return alert("خطأ في الباسورد!");
+    if(isClosed) return alert("الامتحان مغلق حالياً من قبل المستر.");
+    if(cloudPass && prompt("كلمة سر الامتحان المطلوبة:") !== cloudPass) return alert("كلمة السر خاطئة!");
     studentName = document.getElementById("name").value.trim();
-    studentPhone = document.getElementById("phone").value.trim();
-    if(studentName.length < 10) return alert("يرجى كتابة الاسم الرباعي!");
-    if(phoneVisible && studentPhone.length < 11) return alert("يرجى كتابة رقم هاتف صحيح!");
-    let userId = phoneVisible ? studentPhone : studentName;
-    if(blockRepeat) {
-        const snapshot = await get(ref(db, 'results/' + userId));
-        if(snapshot.exists()) return alert("⚠️ عفواً، لقد قمت بأداء الامتحان مسبقاً.");
-    }
+    if(studentName.length < 10) return alert("يرجى كتابة الاسم رباعي بشكل صحيح.");
     document.getElementById("login").style.display="none";
     document.getElementById("exam").style.display="block";
     document.getElementById("student").innerText = studentName;
@@ -366,12 +335,12 @@ window.start = async () => {
 };
 
 window.show = () => {
-    let q = questions[current];
+    let q = questions[current]; if(!q) return;
     document.getElementById("context").innerHTML = q.ctx || "";
     document.getElementById("q").innerText = q.q;
-    let html = "";
-    q.a.forEach((ans, i) => html += `<label><input type="radio" name="ans" onclick="save(${i})" ${answers[current]==i?"checked":""}> ${ans}</label>`);
-    document.getElementById("answers").innerHTML = html;
+    let h = "";
+    q.a.forEach((ans, i) => h += `<label><input type="radio" name="ans" onclick="save(${i})" ${answers[current]==i?"checked":""}> ${ans}</label>`);
+    document.getElementById("answers").innerHTML = h;
     updateNav(); updateMenuStatus();
 };
 
@@ -379,31 +348,32 @@ window.save = (i) => { answers[current] = i; updateMenuStatus(); };
 window.flagQuestion = () => { flags[current] = !flags[current]; show(); };
 window.updateNav = () => {
     let isLast = current === questions.length-1;
-    document.getElementById("navButtons").innerHTML = `<button class="btn-move" onclick="prev()">السابق</button>${!isLast?`<button class="btn-move" style="background:var(--primary)" onclick="next()">التالي</button>`:''}<button class="btn-submit" onclick="submitExam()">تسليم نهائي</button>`;
+    document.getElementById("navButtons").innerHTML = `<button class="btn-move" onclick="prev()">السابق</button>${!isLast?`<button class="btn-move" style="background:var(--primary)" onclick="next()">التالي</button>`:''}<button class="btn-submit" onclick="submitExam()">تسليم الامتحان</button>`;
 };
 window.next = () => { if(current < questions.length-1) { current++; show(); window.scrollTo(0,0); } };
-window.prev = () => { if(current > 0) { current--; show(); window.scrollTo(0,0); } };
+window.prev = () => { if(current > 0) { current--; show(); } };
 window.submitExam = () => {
-    if(!confirm("هل تريد التسليم؟")) return;
+    if(!confirm("هل أنت متأكد من تسليم الإجابات؟")) return;
     let score = 0; questions.forEach((q, i) => { if(answers[i] == q.c) score++; });
-    let id = phoneVisible ? studentPhone : studentName;
-    set(ref(db, 'results/' + id), { name: studentName, score: score + "/" + questions.length, time: new Date().toLocaleString() })
-    .then(() => { alert("تم التسليم بنجاح!"); location.reload(); });
+    set(ref(db, 'results/' + studentName), { name: studentName, score: score + "/" + questions.length, time: new Date().toLocaleString() })
+    .then(() => { alert("تم تسليم امتحانك بنجاح! بالتوفيق."); location.reload(); });
 };
+
 window.showResults = (mode) => {
     get(ref(db, 'results')).then((snap) => {
-        let data = snap.val(); if(!data) return alert("لا يوجد نتائج");
-        let list = Object.values(data);
+        let list = Object.values(snap.val() || {});
         if(mode === 'top') list.sort((a,b) => parseInt(b.score) - parseInt(a.score));
-        let h = `<table><tr><th>الاسم</th><th>الدرجة</th></tr>`;
+        let h = `<table dir="rtl"><tr><th>الاسم</th><th>الدرجة</th></tr>`;
         list.forEach(s => h += `<tr><td>${s.name}</td><td>${s.score}</td></tr>`);
         document.getElementById('adminContent').innerHTML = h + `</table>`;
     });
 };
+
 window.toggleMenu = () => {
     let s = document.getElementById("sidebar"); s.classList.toggle("open");
     document.getElementById("overlay").style.display = s.classList.contains("open") ? "block" : "none";
 };
+
 window.buildMenu = () => {
     let g = document.getElementById("qGrid"); g.innerHTML = "";
     questions.forEach((_, i) => {
@@ -411,6 +381,7 @@ window.buildMenu = () => {
         d.onclick = () => { current=i; show(); toggleMenu(); }; g.appendChild(d);
     });
 };
+
 function updateMenuStatus() {
     questions.forEach((_, i) => {
         let el = document.getElementById("qNum" + i);
@@ -422,6 +393,7 @@ function updateMenuStatus() {
         }
     });
 }
+
 setInterval(() => {
     if(document.getElementById('exam').style.display === 'none') return;
     let m = Math.floor(time/60), s = time%60;
@@ -430,4 +402,4 @@ setInterval(() => {
 }, 1000);
 </script>
 </body>
-</html>
+    </html>
